@@ -27,7 +27,7 @@ namespace Zenject.SpaceFighter
 
         public void Tick()
         {
-            if (_player.Health <= 0 && !_player.IsDead)
+            if (_player.Health < 0)
             {
                 Die();
             }
