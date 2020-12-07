@@ -1,23 +1,29 @@
-using UnityEngine;
 using Zenject;
 
-public class GameInstaller : MonoInstaller<GameInstaller>
+namespace ExtenjectDemo1
 {
-    public PlayerDamageHandler.Settings DamageHandlerSettings;
-    public PlayerScoreUpdater.Settings PlayerScoreUpdater;
-    public GUI.Settings GUISettings;
-    public override void InstallBindings()
+    public class GameInstaller : MonoInstaller<GameInstaller>
     {
-        Container.Bind<Player>().AsSingle().NonLazy();
-        Container.BindInterfacesAndSelfTo<PlayerHealthComponent>().AsSingle();
-        Container.Bind<PlayerScoreUpdater>().AsSingle();
-        Container.Bind<PlayerDamageHandler>().AsSingle();
-        Container.BindInterfacesAndSelfTo<GUI>().AsSingle();
+        public GameView.Settings Settings;
+        public override void InstallBindings()
+        {
+            SignalBusInstaller.Install(Container);
 
+            Container.DeclareSignal<TakeDamage>();
+            Container.DeclareSignal<ScoreUpdate>();
 
-        Container.BindInstance(DamageHandlerSettings);
-        Container.BindInstance(PlayerScoreUpdater);
-        Container.BindInstance(GUISettings);
+            Container.DeclareSignal<OnHealthUpdated>().OptionalSubscriber();
+            Container.DeclareSignal<OnScoreUpdated>().OptionalSubscriber();
 
-    }
+            Container.DeclareSignal<Die>();
+            Container.DeclareSignal<StartGame>();
+
+            Container.Bind<Player>().AsSingle().NonLazy();
+
+            Container.BindInstance(Settings);
+
+            
+
+        }
+    } 
 }
